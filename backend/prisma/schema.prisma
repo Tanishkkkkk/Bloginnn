@@ -1,0 +1,131 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  READER
+  WRITER
+  ADMIN
+}
+
+enum PostStatus {
+  DRAFT
+  PUBLISHED
+  SCHEDULED
+  ARCHIVED
+}
+
+model User {
+  id        String   @id @default(uuid())
+  name      String
+  email     String   @unique
+  password  String?
+  bio       String?
+  avatar    String?
+  username  String   @unique
+  role      Role     @default(READER)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  posts     Post[]
+  bookmarks Bookmark[]
+  claps     Clap[]
+  followers Follow[]   @relation("following")
+  following Follow[]   @relation("follower")
+  postViews PostView[]
+
+  @@map("users")
+}
+
+model Post {
+  id          String     @id @default(uuid())
+  authorId    String
+  title       String
+  slug        String     @unique
+  subtitle    String?
+  content     String     @db.Text
+  thumbnail   String?
+  status      PostStatus @default(DRAFT)
+  tags        String[]
+  categoryId  String?
+  seoDesc     String?
+  readingTime Int        @default(0)
+  publishedAt DateTime?
+  scheduledAt DateTime?
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  author    User       @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  category  Category?  @relation(fields: [categoryId], references: [id])
+  bookmarks Bookmark[]
+  claps     Clap[]
+  views     PostView[]
+
+  @@map("posts")
+}
+
+model Category {
+  id    String @id @default(uuid())
+  name  String
+  slug  String @unique
+  posts Post[]
+
+  @@map("categories")
+}
+
+model Bookmark {
+  id        String   @id @default(uuid())
+  userId    String
+  postId    String
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, postId])
+  @@map("bookmarks")
+}
+
+model Follow {
+  id          String   @id @default(uuid())
+  followerId  String
+  followingId String
+  createdAt   DateTime @default(now())
+
+  follower  User @relation("follower", fields: [followerId], references: [id], onDelete: Cascade)
+  following User @relation("following", fields: [followingId], references: [id], onDelete: Cascade)
+
+  @@unique([followerId, followingId])
+  @@map("followers")
+}
+
+model Clap {
+  id        String   @id @default(uuid())
+  userId    String
+  postId    String
+  count     Int      @default(1)
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, postId])
+  @@map("claps")
+}
+
+model PostView {
+  id        String   @id @default(uuid())
+  postId    String
+  viewerId  String?
+  viewedAt  DateTime @default(now())
+
+  post   Post  @relation(fields: [postId], references: [id], onDelete: Cascade)
+  viewer User? @relation(fields: [viewerId], references: [id])
+
+  @@map("post_views")
+}
