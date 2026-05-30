@@ -17,3 +17,5 @@
 - [x] Task complete: Add email verification and form input validation logic (Completed: 2026-05-29 11:47:49)
 
 - [x] Task complete: Implement local storage caching for API fetching calls (Completed: 2026-05-30 09:11:49)
+
+- [x] Task complete: Fix navigation layout transition glitches on viewport changes (Completed: 2026-05-30 09:11:55)
