@@ -27,3 +27,5 @@
 - [x] Task complete: Implement local storage caching for API fetching calls (Completed: 2026-06-01 21:00:08)
 
 - [x] Task complete: Implement local storage caching for API fetching calls (Completed: 2026-06-03 22:11:21)
+
+- [x] Task complete: Clean up duplicate logs and unused helper statements (Completed: 2026-06-03 22:11:26)
