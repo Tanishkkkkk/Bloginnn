@@ -51,3 +51,5 @@ export function logTelemetryEvent(event: string, meta?: Record<string, any>): vo
 // Trace: 2026-06-07 22:35:47 - Update meta details and structural SEO indexing files
 
 // Trace: 2026-06-08 21:38:38 - Polish interactive card hover shadows and transitions
+
+// Trace: 2026-06-08 21:38:41 - Clean up duplicate logs and unused helper statements
